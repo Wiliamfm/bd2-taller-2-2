@@ -105,6 +105,7 @@ class Phone(models.Model):
 
 class Product(models.Model):
     title = models.CharField(max_length=100, null= False)
+    price = models.DecimalField(max_digits=13, decimal_places=2, null= False)
     photos = models.BinaryField(blank=True, null=True)  # This field type is a guess.
     brand = models.ForeignKey(Brand, on_delete= models.CASCADE, db_column='brand')
     category = models.ForeignKey(Category, on_delete= models.SET_NULL, db_column='category', blank=True, null=True)
@@ -113,7 +114,6 @@ class Product(models.Model):
     class Meta:
         managed = False
         db_table = 'product'
-
 
 class ProductCalification(models.Model):
     calification = models.IntegerField(null= False)
@@ -161,7 +161,6 @@ class UserType(models.Model):
 
 
 class Variant(models.Model):
-    price = models.DecimalField(max_digits=13, decimal_places=2, null= False)
     stock = models.IntegerField(null= False)
     charact = models.TextField(null= False)
     product = models.ForeignKey(Product, on_delete= models.CASCADE, db_column='product')

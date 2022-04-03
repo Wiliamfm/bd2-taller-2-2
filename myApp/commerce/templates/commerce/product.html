@@ -1,0 +1,26 @@
+{% extends "commerce/layout.html" %}
+
+{% block script %}
+{% endblock %}
+
+{% block title %}
+  {{ product.title }}
+{% endblock %}
+
+{% block body %}
+  <div class="container">
+    <div class="container">
+      <img src="" alt="product's image">
+    </div>
+    <div class="container">
+      <h4>
+        PRICE: {{ product.price }}
+      </h4>
+      <div class="container">
+        <p>BRAND: {{ product.brand }}</p>
+        <p>CATEGORY: {{ product.category.category }}</p>
+        <p>SUPPLIER: {{ product.supplier.full_name }}</p>
+      </div>
+    </div>
+  </div>
+{% endblock %}
