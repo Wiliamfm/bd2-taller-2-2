@@ -7,6 +7,7 @@ from commerce.models import *
 
 # Create your views here.
 
+#This view is cached, see the urls.py file.
 def index(request):
 	if request.method == 'GET':
 		products= Product.objects.all()
