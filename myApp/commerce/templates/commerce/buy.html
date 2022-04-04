@@ -1,0 +1,22 @@
+{% extends 'commerce/layout.html' %}
+{% load static %}
+
+{% block script %}
+<script src="{% static 'commerce/buy.js' %}"></script>
+{% endblock %}
+
+{% block title %}
+  Buy
+{% endblock %}
+
+{% block body %}
+  <div class="container m-3 p-3">
+    <form>
+      <div class="mb-3">
+        <label for="address" class="form-label">address</label>
+        <input type="text" class="form-control" id="address" required>
+      </div>
+      <button type="submit" class="btn btn-primary" id="btnSubmit">Buy</button>
+    </form>
+  </div>
+{% endblock %}

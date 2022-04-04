@@ -114,6 +114,11 @@ class Product(models.Model):
     class Meta:
         managed = False
         db_table = 'product'
+    
+    '''
+    def __str__(self) -> str:
+        return f"{self.id}"
+    '''
 
 class ProductCalification(models.Model):
     calification = models.IntegerField(null= False)
@@ -168,3 +173,8 @@ class Variant(models.Model):
     class Meta:
         managed = False
         db_table = 'variant'
+    
+    '''
+    def __str__(self) -> str:
+        return f"{self.id}"
+    '''

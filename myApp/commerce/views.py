@@ -28,35 +28,80 @@ def products(request, id):
 
 @csrf_exempt
 def carts(request):
+	r= caches['default']
+	key_products= 'cart:products'
 	if request.method == 'GET':
-		cart= 'carts'
-		return render(request, 'commerce/cart.html', {
-			'cart': cart
-		})
+		products_id= r.get(key_products)
+		if products_id:
+			products= []
+			for product in Product.objects.filter(id__in=products_id):
+				vs= r.get(f'cart:{product.id}')[0]
+				variants= []
+				for v in vs:
+					variant= Variant.objects.get(product= product, id= v)
+					variants.append({'variant': variant, 'qty': vs[v]})
+				products.append({'product': product, 'variants': variants})
+			#Save cart in cache memory
+			r.set(key= 'cart', value= products, timeout= 60*60*2)
+			return render(request, 'commerce/cart.html', {
+				'has_items': True,
+				'products': products,
+			})
+		else:
+			return render(request, 'commerce/cart.html', {
+				'has_items': False
+			})
 	if request.method == 'POST':
 		data= json.loads(request.body)
 		print(data)
 		#Access redis db
-		r= caches['default']
-		k= f'cart:{data["product_id"]}'
 		#Get the variants stored in redis
-		variants= r.get(key= k)[0]
+		products= r.get(key= key_products)
+		#Save the product
+		if products:
+			products.add(data['product_id'])
+			r.set(key= key_products, value=products)
+			r.touch(key= key_products, timeout= 60*60)
+		else:
+			r.set(key= key_products, value= {data['product_id']}, timeout= 60*60)
+		key_variants= f'cart:{data["product_id"]}'
+		variants= r.get(key= key_variants)
 		if variants:
-			quantity= variants.get(data['variant_id'])
+			quantity= variants[0].get(data['variant_id'])
 			if quantity:
 				#Increment variant quantity
-				variants[data['variant_id']]= quantity+1
+				variants[0][data['variant_id']]= quantity+1
 			else:
 				#Save this variant
-				variants[data['variant_id']]= 1
+				variants[0][data['variant_id']]= 1
 			#update value
-			r.set(key= k, value= [
-				variants
+			r.set(key= key_variants, value= [
+				variants[0]
 			])
 			#Update timeout
-			r.touch(key= k, timeout= 60*60)
+			r.touch(key= key_variants, timeout= 60*60)
 		else:
 			#Save the variant up to 1 hour
-			r.set(key= k, value= {data['variant_id']: 1}, timeout= 60*60)
-		print(r.get(k))
+			r.set(key= key_variants, value= [{data['variant_id']: 1}], timeout= 60*60)
+		print(r.get(key_variants))
 		return JsonResponse({'message': 'Item added successfully'}, status= 201)
+
+def bills(request):
+	if request.method == 'POST':
+		r= caches['default']
+		products= r.get('cart')
+		data= json.loads(request.body)
+	return render(request, 'commerce/buy.html')
+
+def pay_methods(request):
+
+	def as_dict(pay_methods):
+		d= []
+		for pm in pay_methods:
+			d.append({'pay_method': pm.pay_method})
+		return d
+
+	if request.method == 'GET':
+		pms= PayMethod.objects.all()
+		pay_methods= as_dict(pms)
+		return JsonResponse(pay_methods, status= 200, safe= False)
