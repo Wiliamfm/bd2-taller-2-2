@@ -7,6 +7,12 @@ from django.core.cache import caches
 
 from commerce.models import *
 
+import pymongo
+
+client= pymongo.MongoClient()
+db= client['commerce']
+col= db['bill']
+
 # Create your views here.
 
 #This view is cached, see the urls.py file.
@@ -86,11 +92,23 @@ def carts(request):
 		print(r.get(key_variants))
 		return JsonResponse({'message': 'Item added successfully'}, status= 201)
 
+@csrf_exempt
 def bills(request):
 	if request.method == 'POST':
 		r= caches['default']
 		products= r.get('cart')
 		data= json.loads(request.body)
+		for product in products:
+			p= {'product': product['product'].as_dict()}
+			vs= []
+			for variant in product['variants']:
+				v= variant['variant'].as_dict()
+				v.update({'quantity': variant['qty']})
+				vs.append(v)
+			p['variants']= vs
+			p['pay_method']= data['pay_method']
+			p['address']= data['address']
+			col.insert_one(p)
 	return render(request, 'commerce/buy.html')
 
 def pay_methods(request):

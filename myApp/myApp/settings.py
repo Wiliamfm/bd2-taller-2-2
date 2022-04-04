@@ -90,6 +90,8 @@ DATABASES = {
     }
 }
 
+#DATABASE_ROUTERS = ['../commerce/routers/MongoRouter']
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',

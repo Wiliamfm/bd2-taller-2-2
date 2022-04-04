@@ -119,6 +119,8 @@ class Product(models.Model):
     def __str__(self) -> str:
         return f"{self.id}"
     '''
+    def as_dict(self):
+        return {'id': self.id, 'title': self.title, 'brand': self.brand.name, 'category': self.category.category, 'supplier': self.supplier.document}
 
 class ProductCalification(models.Model):
     calification = models.IntegerField(null= False)
@@ -178,3 +180,5 @@ class Variant(models.Model):
     def __str__(self) -> str:
         return f"{self.id}"
     '''
+    def as_dict(self):
+        return {'id': self.id, 'stock': self.stock, 'description': self.charact}
