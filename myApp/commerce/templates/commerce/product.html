@@ -1,6 +1,9 @@
 {% extends "commerce/layout.html" %}
+{% load static %}
 
 {% block script %}
+  <script>var product= "{{ product.id }}"</script>
+  <script src="{% static 'commerce/product.js' %}"></script>
 {% endblock %}
 
 {% block title %}
@@ -20,7 +23,24 @@
         <p>BRAND: {{ product.brand }}</p>
         <p>CATEGORY: {{ product.category.category }}</p>
         <p>SUPPLIER: {{ product.supplier.full_name }}</p>
+        <p>VARIANTS:</p>
+        <ul>
+          {% for variant in variants %}
+            <li>
+              {{ variant.charact }}
+              <p>Stock: {{ variant.stock }}</p>
+            </li>
+            {% if variant.stock > 0 %}
+              <button data-variant_id="{{ variant.id }}" type="button" class="btnVariant btn btn-outline-primary">Add</button>
+            {% else %}
+              <button type="button" class="btn btn-outline-danger" disabled>Primary button</button>
+            {% endif %}
+          {% endfor %}
+        </ul>
       </div>
     </div>
+  </div>
+  <div class="container">
+
   </div>
 {% endblock %}
