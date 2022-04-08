@@ -2,6 +2,9 @@
 {% load static %}
 
 {% block script %}
+<script async
+    src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+</script>
 <script src="{% static 'commerce/buy.js' %}"></script>
 {% endblock %}
 
@@ -13,8 +16,12 @@
   <div class="container m-3 p-3">
     <form>
       <div class="mb-3">
-        <label for="address" class="form-label">address</label>
-        <input type="text" class="form-control" id="address" required>
+        <br>
+        <h6>Address:</h6>
+        <label for="latitude" class="form-label">latitude</label>
+        <input type="text" class="form-control" id="latitude" required>
+        <label for="longitude" class="form-label">longitude</label>
+        <input type="text" class="form-control" id="longitude" required>
       </div>
       <button type="submit" class="btn btn-primary" id="btnSubmit">Buy</button>
     </form>

@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('form').addEventListener('submit', () => {
     event.preventDefault();
     let form= event.currentTarget;
-    goToBuy('http://localhost:8000/buy/', document.querySelector('input[name="radios_options"]:checked').value, form['address'].value);
+    goToBuy('http://localhost:8000/buy/', document.querySelector('input[name="radios_options"]:checked').value, form['latitude'].value, form['longitude'].value);
   });
 });
 
@@ -36,17 +36,30 @@ function getPayMethods(url){
   });
 }
 
-function goToBuy(url, pay_method, address){
-  console.log(pay_method, address);
+function goToBuy(url, pay_method, latitude, longitude){
+  console.log(pay_method, latitude, longitude);
   data= {
     pay_method: pay_method,
-    address: address
+    latitude: latitude,
+    longitude: longitude
   }
   fetch(url, {
     method: 'POST',
     mode: 'cors',
     body: JSON.stringify(data)
-  }).then(response => response.json())
+  }).then(response => {
+    switch(response.status){
+      case 201:
+        return response.json()
+        break;
+      case 400:
+        alert('The cart has no products!')
+        break;
+      default:
+        console.log('Other status?')
+        break;
+    }
+  })
   .then(data => {
     console.log(data);
   }).catch(err => {

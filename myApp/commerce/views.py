@@ -1,6 +1,6 @@
 import json
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.core.serializers import serialize
 from django.views.decorators.csrf import csrf_exempt
 from django.core.cache import caches
@@ -98,18 +98,44 @@ def bills(request):
 		r= caches['default']
 		products= r.get('cart')
 		data= json.loads(request.body)
-		for product in products:
-			p= {'product': product['product'].as_dict()}
-			vs= []
-			for variant in product['variants']:
-				v= variant['variant'].as_dict()
-				v.update({'quantity': variant['qty']})
-				vs.append(v)
-			p['variants']= vs
-			p['pay_method']= data['pay_method']
-			p['address']= data['address']
-			col.insert_one(p)
-	return render(request, 'commerce/buy.html')
+		if products:
+			'''
+				- total = models.DecimalField(max_digits=20, decimal_places=4)
+    		- bill_date = models.DateTimeField(auto_now_add= True, null= False)
+    		- shopping_cart = models.OneToOneField('ShoppingCart', on_delete= models.SET_NULL, db_column='shopping_cart', blank=True, null= True)
+    		- shipping_type = models.ForeignKey('ShippingType', on_delete= models.SET_NULL, db_column='shipping_type', null= True)
+    		- pay_method = models.ForeignKey('PayMethod', on_delete= models.SET_NULL, db_column='pay_method', null= True)
+    		- bill_state = models.ForeignKey('BillState', on_delete= models.SET_NULL, db_column='bill_state', null= True)
+			'''
+			b= {
+				'items': [],
+				'pay_method': data['pay_method'],
+				'address': {
+					'longitude': data['longitude'],
+					'latitude': data['latitude']
+				}
+			}
+			total= 0
+			for product in products:
+				amount= 0
+				cart_condition= CartCondition.objects.get(id= 2)
+				p= {'product': product['product'].as_dict()}
+				total+= product['product'].price
+				vs= []
+				for variant in product['variants']:
+					amount= variant['qty']
+					shopping_cart= ShoppingCart(amount= amount, cart_condition= cart_condition)
+					v= variant['variant'].as_dict()
+					v.update({'quantity': variant['qty']})
+					vs.append(v)
+				p['variants']= vs
+				b['items'].append(p)
+			col.insert_one(b)
+			return JsonResponse(data= {'message': 'success'}, status= 201)
+		else:
+			return JsonResponse(data= {'message': 'no products in the cart'}, status= 400)
+	else:
+		return render(request, 'commerce/buy.html')
 
 def pay_methods(request):
 
