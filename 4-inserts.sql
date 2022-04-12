@@ -1,11 +1,11 @@
 insert into city
-values (1, 'cali');
+values (1, 'bogota');
 
 insert into city
-values (2, 'medellin');
+values (2, 'cali');
 
 insert into city
-values (3, 'bogota');
+values (3, 'medellin');
 
 insert into user_type
 values (1, 'admin');
@@ -77,13 +77,13 @@ insert into bill_state
 values (4, 'canceled');
 
 insert into app_user
-values (0123456789, 'Pepito Perez', 'asdf@asdf.asdf', '1234', 'calle 185 a # 11 b - 07', 1, 1, 3);
+values (0123456789, 'admin', 'asdf@asdf.asdf', '1234', 'calle 185 a # 11 b - 07', 1, 1, 1);
 
 insert into app_user
-values (1234567890, 'Sara Perez', 'asdf2@asdf.asdf', '1234', 'calle 185 a # 11 b - 07', 2, 1, 3);
+values (1234567890, 'example', 'asdf2@asdf.asdf', '1234', 'calle 185 a # 11 b - 07', 2, 1, 1);
 
 insert into app_user
-values (2345678901, 'Camila Perez', 'asdf3@asdf.asdf', '1234', 'calle 185 a # 11 b - 07', 3, 1, 3);
+values (2345678901, 'vendor example', 'asdf3@asdf.asdf', '1234', 'calle 185 a # 11 b - 07', 3, 1, 1);
 
 insert into phone
 values (1, '1234567890', 0123456789);
@@ -104,19 +104,19 @@ insert into auditory.event_type
 values (3, 'delete');
 
 insert into product
-values (1, 'example', null, 1, 1, 2345678901);
+values (1, 'example', null, 10000, 1, 1, 2345678901);
 
 insert into variant
-values (1, 100000, 1, 'variant example', 1);
+values (1, 1, 'variant example', 1);
 
 insert into variant
-values (2, 125000, 2, 'variant example 2', 1);
+values (2, 2, 'variant example 2', 1);
 
 insert into variant
-values (3, 99.900, 5, 'variant example 3', 1);
+values (3, 5, 'variant example 3', 1);
 
 insert into variant
-values (4, 99.900, 2, 'variant example 4', 1);
+values (4, 2, 'variant example 4', 1);
 
 insert into variant
-values (5, 99.900, 2, 'variant example 5', 1);
+values (5, 2, 'variant example 5', 1);

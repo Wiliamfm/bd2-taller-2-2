@@ -51,4 +51,29 @@ $$
 	end;
 $$;
 
-drop function  get_product_calification ;
+
+create or replace functions trigger_verify_product_vendor()
+	return trigger
+	language plpgsql
+as $$
+	declare
+		document product.supplier%type;
+	begin
+		select u.document
+			into document
+			from public.app_user u
+			where u.document = new.supplier;
+
+			if found then
+				return new;
+			else
+				raise exception "The supplier does not exists!"
+			end if;
+	end;
+$$;
+
+create or replace trigger verify_supplier_on_product
+	after insert or update
+	on public.product
+	for each row
+	execute procedure trigger_verify_product_vendor;

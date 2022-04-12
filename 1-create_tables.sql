@@ -9,21 +9,21 @@ create table city(
 
 create table user_type(
 	id serial primary key,
-	u_type varchar(20)
+	type varchar(20) unique not null
 );
 
 create table document_type(
 	id serial primary key,
-	document_type varchar(3) unique not null
+	type varchar(3) unique not null
 );
 
 create table app_user(
 	document varchar(20) primary key,
 	full_name varchar(100),
 	email varchar(100) unique not null,
-	u_password varchar(100) not null,
+	password varchar(100) not null,
 	address varchar(100),
-	u_type serial references user_type (id) on delete set null,
+	user_type serial references user_type (id) on delete cascade,
 	document_type serial references document_type (id) on delete set null,
 	city serial references city (id) on delete set null
 );
@@ -48,6 +48,7 @@ create table product(
 	id serial primary key,
 	title varchar(100) not null,
 	photos bytea array,
+	price numeric(13,2) not null,
 	brand serial references brand (id) on delete cascade,
 	category integer references category (id) on delete set null,
 	supplier varchar(20) references app_user (document) on delete cascade
@@ -55,15 +56,14 @@ create table product(
 
 create table variant(
 	id serial primary key,
-	price numeric(13,2) not null,
 	stock integer not null,
-	charact text not null,
+	description text not null,
 	product serial references product (id) on delete cascade
 );
 
 create table cart_condition(	
 	id serial primary key,
-	condition varchar(10) not null
+	condition varchar(10) unique not null
 );
 
 create table shopping_cart(

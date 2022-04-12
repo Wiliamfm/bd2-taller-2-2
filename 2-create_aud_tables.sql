@@ -4,7 +4,7 @@ create schema auditory;
 
 create table auditory.event_type(
 	id serial primary key,
-	event varchar(10)
+	event varchar(10) unique not null
 );
 
 create table auditory.product_audit (
