@@ -1,6 +1,6 @@
 -- Database: taller_1
 
-create schema public;
+--create schema public;
 
 create table city(
 	id serial primary key,

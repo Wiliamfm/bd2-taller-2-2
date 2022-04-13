@@ -12,6 +12,7 @@ create table auditory.product_audit (
 	title varchar(100) not null,
 	category varchar(20) not null,
 	photos bytea array, 
+	price numeric(13,2) not null,
 	rate integer,
 	brand varchar(100) not null,
 	vendor_name varchar(100) not null,
@@ -21,13 +22,12 @@ create table auditory.product_audit (
 
 create table auditory.variant_audit(
 	id serial primary key,
-	price numeric(13,2) not null,
 	stock integer not null,
-	characteristics text not null,
+	description text not null,
 	product varchar(100) not null,
 	datetime timestamptz,
 	event_type integer references auditory.event_type(id) on delete set null
-)
+);
 
 --Create functions for auditory
 
@@ -87,25 +87,25 @@ $$
 	
 	if tg_op = 'INSERT' then	
 		insert into auditory.product_audit 
-			(title, category, photos, rate, brand, vendor_name, datetime, event_type)
+			(title, category, photos, price, rate, brand, vendor_name, datetime, event_type)
 		values 
-			(new.title, product_category, new.photos, product_calification, product_brand, product_supplier, now(), 1);
+			(new.title, product_category, new.photos, new.price, product_calification, product_brand, product_supplier, now(), 1);
 		return new;
 	end if;
 	
 	if tg_op = 'UPDATE' then	
 		insert into auditory.product_audit 
-			(title, category, photos, rate, brand, vendor_name, datetime, event_type)
+			(title, category, photos, price, rate, brand, vendor_name, datetime, event_type)
 		values 
-			(new.title, product_category, new.photos, product_calification, product_brand, product_supplier, now(), 2);
+			(new.title, product_category, new.photos, new.price, product_calification, product_brand, product_supplier, now(), 2);
 		return new;
 	end if;
 	
 	if tg_op = 'DELETE' then	
 		insert into auditory.product_audit 
-			(title, category, photos, rate, brand, vendor_name, datetime, event_type)
+			(title, category, photos, price, rate, brand, vendor_name, datetime, event_type)
 		values 
-			(old.title, product_category, old.photos, product_calification, product_brand, product_supplier, now(), 3);
+			(old.title, product_category, old.photos, old.price, product_calification, product_brand, product_supplier, now(), 3);
 		return old;
 	end if;	
 	
@@ -145,25 +145,25 @@ $$
 	
 	if tg_op = 'INSERT' then	
 		insert into auditory.variant_audit 
-			(price, stock, characteristics, product, datetime, event_type)
+			(stock, description, product, datetime, event_type)
 		values 
-			(new.price, new.stock, new.charact, variant_product, now(), 1);
+			(new.stock, new.description, variant_product, now(), 1);
 		return new;
 	end if;
 	
 	if tg_op = 'UPDATE' then	
 		insert into auditory.variant_audit 
-			(price, stock, characteristics, product, datetime, event_type)
+			(stock, description, product, datetime, event_type)
 		values 
-			(new.price, new.stock, new.charact, variant_product, now(), 2);
+			(new.stock, new.description, variant_product, now(), 2);
 		return new;
 	end if;
 	
 	if tg_op = 'DELETE' then		
 		insert into auditory.variant_audit 
-			(price, stock, characteristics, product, datetime, event_type)
+			(stock, description, product, datetime, event_type)
 		values 
-			(old.price, old.stock, old.charact, variant_product, now(), 3);
+			(old.stock, old.description, variant_product, now(), 3);
 		return old;
 	end if;	
 	

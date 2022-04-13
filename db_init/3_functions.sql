@@ -52,8 +52,8 @@ $$
 $$;
 
 
-create or replace functions trigger_verify_product_vendor()
-	return trigger
+create or replace function trigger_verify_product_vendor()
+	returns trigger
 	language plpgsql
 as $$
 	declare
@@ -67,8 +67,9 @@ as $$
 			if found then
 				return new;
 			else
-				raise exception "The supplier does not exists!"
+				raise exception 'The supplier does not exists!';
 			end if;
+
 	end;
 $$;
 
@@ -76,4 +77,4 @@ create or replace trigger verify_supplier_on_product
 	after insert or update
 	on public.product
 	for each row
-	execute procedure trigger_verify_product_vendor;
+	execute procedure trigger_verify_product_vendor();

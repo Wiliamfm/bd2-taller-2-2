@@ -1,0 +1,15 @@
+version: '3'
+services:
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=taller_3
+    ports:
+      - '5432:5432'
+    volumes: 
+      - ./db_init/1_create_tables.sql:/docker-entrypoint-initdb.d/1_create_tables.sql
+      - ./db_init/2_create_aud_tables.sql:/docker-entrypoint-initdb.d/2_create_aud_tables.sql
+      - ./db_init/3_functions.sql:/docker-entrypoint-initdb.d/3_functions.sql
+      - ./db_init/4_inserts.sql:/docker-entrypoint-initdb.d/4_inserts.sql
