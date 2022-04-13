@@ -30,7 +30,7 @@ create table app_user(
 
 create table phone(
 	id serial primary key,
-	phone_numer varchar(10) unique not null,
+	phone varchar(10) unique not null,
 	owner varchar(20) references app_user(document) on delete cascade
 );
 
@@ -81,7 +81,7 @@ create table shopping_product(
 
 create table shipping_type(
 	id serial primary key,
-	shipping_type varchar(20) unique not null
+	type varchar(20) unique not null
 );
 
 create table pay_method(

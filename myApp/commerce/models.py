@@ -14,9 +14,9 @@ class AppUser(models.Model):
     document = models.CharField(primary_key=True, max_length=20)
     full_name = models.CharField(max_length=100, blank=True, null=True)
     email = models.EmailField(unique=True, max_length=100, null= False)
-    u_password = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)
     address = models.CharField(max_length=100, blank=True, null=True)
-    u_type = models.ForeignKey('UserType', on_delete= models.CASCADE, db_column='u_type')
+    user_type = models.ForeignKey('UserType', on_delete= models.CASCADE, db_column='u_type')
     document_type = models.ForeignKey('DocumentType', on_delete= models.SET_NULL, db_column='document_type', null= True)
     city = models.ForeignKey('City', on_delete= models.SET_NULL, db_column='city', null= True)
 
@@ -28,7 +28,7 @@ class AppUser(models.Model):
 class Bill(models.Model):
     total = models.DecimalField(max_digits=20, decimal_places=4)
     bill_date = models.DateTimeField(auto_now_add= True, null= False)
-    shopping_cart = models.OneToOneField('ShoppingCart', on_delete= models.SET_NULL, db_column='shopping_cart', blank=True, null= True)
+    shopping_cart = models.OneToOneField('ShoppingCart', on_delete= models.SET_NULL, db_column='shopping_cart', blank=True, null= True, unique= True)
     shipping_type = models.ForeignKey('ShippingType', on_delete= models.SET_NULL, db_column='shipping_type', null= True)
     pay_method = models.ForeignKey('PayMethod', on_delete= models.SET_NULL, db_column='pay_method', null= True)
     bill_state = models.ForeignKey('BillState', on_delete= models.SET_NULL, db_column='bill_state', null= True)
@@ -39,7 +39,7 @@ class Bill(models.Model):
 
 
 class BillState(models.Model):
-    bill_condition = models.CharField(unique=True, max_length=40, null= False)
+    bill_condition = models.CharField(unique=True, max_length=40, null= False, blank= False)
 
     class Meta:
         managed = False
@@ -47,7 +47,7 @@ class BillState(models.Model):
 
 
 class Brand(models.Model):
-    name = models.CharField(unique=True, max_length=100, null= False)
+    name = models.CharField(unique=True, max_length=100, null= False, blank= False)
 
     class Meta:
         managed = False
@@ -55,7 +55,7 @@ class Brand(models.Model):
 
 
 class CartCondition(models.Model):
-    condition = models.CharField(max_length=10, unique= True, null= False)
+    condition = models.CharField(max_length=10, unique= True, null= False, blank= False)
 
     class Meta:
         managed = False
@@ -63,7 +63,7 @@ class CartCondition(models.Model):
 
 
 class Category(models.Model):
-    category = models.CharField(unique=True, max_length=20, null= False)
+    category = models.CharField(unique=True, max_length=20, null= False, blank= False)
 
     class Meta:
         managed = False
@@ -79,7 +79,7 @@ class City(models.Model):
 
 
 class DocumentType(models.Model):
-    document_type = models.CharField(unique=True, max_length=3, null= False)
+    type = models.CharField(unique=True, max_length=3, null= False, blank= False)
 
     class Meta:
         managed = False
@@ -87,7 +87,7 @@ class DocumentType(models.Model):
 
 
 class PayMethod(models.Model):
-    pay_method = models.CharField(unique=True, max_length=20, null= False)
+    pay_method = models.CharField(unique=True, max_length=20, null= False, blank= False)
 
     class Meta:
         managed = False
@@ -95,8 +95,8 @@ class PayMethod(models.Model):
 
 
 class Phone(models.Model):
-    phone_numer = models.CharField(unique=True, max_length=10, null= False)
-    owner = models.ForeignKey(AppUser, on_delete= models.CASCADE, db_column='owner', blank=True, null=False)
+    phone = models.CharField(unique=True, max_length=10, null= False, blank= False)
+    owner = models.ForeignKey(AppUser, on_delete= models.CASCADE, db_column='owner', blank=False, null=False)
 
     class Meta:
         managed = False
@@ -105,8 +105,8 @@ class Phone(models.Model):
 
 class Product(models.Model):
     title = models.CharField(max_length=100, null= False)
-    price = models.DecimalField(max_digits=13, decimal_places=2, null= False)
     photos = models.BinaryField(blank=True, null=True)  # This field type is a guess.
+    price = models.DecimalField(max_digits=13, decimal_places=2, null= False)
     brand = models.ForeignKey(Brand, on_delete= models.CASCADE, db_column='brand')
     category = models.ForeignKey(Category, on_delete= models.SET_NULL, db_column='category', blank=True, null=True)
     supplier = models.ForeignKey(AppUser, on_delete= models.CASCADE, db_column='supplier', blank=True, null=False)
@@ -133,7 +133,7 @@ class ProductCalification(models.Model):
 
 
 class ShippingType(models.Model):
-    shipping_type = models.CharField(unique=True, max_length=20, null= False)
+    type = models.CharField(unique=True, max_length=20, null= False, blank= False)
 
     class Meta:
         managed = False
@@ -160,7 +160,7 @@ class ShoppingProduct(models.Model):
 
 
 class UserType(models.Model):
-    u_type = models.CharField(max_length=20, blank=True, null=False, unique= True)
+    type = models.CharField(max_length=20, blank=False, null=False, unique= True)
 
     class Meta:
         managed = False
@@ -169,7 +169,7 @@ class UserType(models.Model):
 
 class Variant(models.Model):
     stock = models.IntegerField(null= False)
-    charact = models.TextField(null= False)
+    description = models.TextField(null= False)
     product = models.ForeignKey(Product, on_delete= models.CASCADE, db_column='product')
 
     class Meta:
