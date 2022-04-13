@@ -16,7 +16,7 @@ class AppUser(models.Model):
     email = models.EmailField(unique=True, max_length=100, null= False)
     password = models.CharField(max_length=100)
     address = models.CharField(max_length=100, blank=True, null=True)
-    user_type = models.ForeignKey('UserType', on_delete= models.CASCADE, db_column='u_type')
+    user_type = models.ForeignKey('UserType', on_delete= models.CASCADE, db_column='user_type')
     document_type = models.ForeignKey('DocumentType', on_delete= models.SET_NULL, db_column='document_type', null= True)
     city = models.ForeignKey('City', on_delete= models.SET_NULL, db_column='city', null= True)
 
@@ -119,6 +119,7 @@ class Product(models.Model):
     def __str__(self) -> str:
         return f"{self.id}"
     '''
+
     def as_dict(self):
         return {'id': self.id, 'title': self.title, 'brand': self.brand.name, 'category': self.category.category, 'supplier': self.supplier.document}
 

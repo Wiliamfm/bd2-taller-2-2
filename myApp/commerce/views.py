@@ -57,7 +57,7 @@ def carts(request):
 			return render(request, 'commerce/cart.html', {
 				'has_items': False
 			})
-	if request.method == 'POST':
+	elif request.method == 'POST':
 		data= json.loads(request.body)
 		print(data)
 		#Access redis db
