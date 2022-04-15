@@ -41,7 +41,7 @@ def carts(request):
 		if products_id:
 			products= []
 			for product in Product.objects.filter(id__in=products_id):
-				vs= r.get(f'cart:{product.id}')[0]
+				vs= r.get(f'cart:product:{product.id}')[0]
 				variants= []
 				for v in vs:
 					variant= Variant.objects.get(product= product, id= v)
@@ -59,7 +59,6 @@ def carts(request):
 			})
 	elif request.method == 'POST':
 		data= json.loads(request.body)
-		print(data)
 		#Access redis db
 		#Get the variants stored in redis
 		products= r.get(key= key_products)
@@ -70,7 +69,8 @@ def carts(request):
 			r.touch(key= key_products, timeout= 60*60)
 		else:
 			r.set(key= key_products, value= {data['product_id']}, timeout= 60*60)
-		key_variants= f'cart:{data["product_id"]}'
+		print("Key", key_products, "Products key:", r.get(key_products))
+		key_variants= f'cart:product:{data["product_id"]}'
 		variants= r.get(key= key_variants)
 		if variants:
 			quantity= variants[0].get(data['variant_id'])
@@ -89,7 +89,7 @@ def carts(request):
 		else:
 			#Save the variant up to 1 hour
 			r.set(key= key_variants, value= [{data['variant_id']: 1}], timeout= 60*60)
-		print(r.get(key_variants))
+		print("Key", key_variants, "Variants key:", r.get(key_variants))
 		return JsonResponse({'message': 'Item added successfully'}, status= 201)
 
 @csrf_exempt
@@ -97,16 +97,9 @@ def bills(request):
 	if request.method == 'POST':
 		r= caches['default']
 		products= r.get('cart')
+		print("Products:", products)
 		data= json.loads(request.body)
 		if products:
-			'''
-				- total = models.DecimalField(max_digits=20, decimal_places=4)
-    		- bill_date = models.DateTimeField(auto_now_add= True, null= False)
-    		- shopping_cart = models.OneToOneField('ShoppingCart', on_delete= models.SET_NULL, db_column='shopping_cart', blank=True, null= True)
-    		- shipping_type = models.ForeignKey('ShippingType', on_delete= models.SET_NULL, db_column='shipping_type', null= True)
-    		- pay_method = models.ForeignKey('PayMethod', on_delete= models.SET_NULL, db_column='pay_method', null= True)
-    		- bill_state = models.ForeignKey('BillState', on_delete= models.SET_NULL, db_column='bill_state', null= True)
-			'''
 			b= {
 				'items': [],
 				'pay_method': data['pay_method'],

@@ -28,12 +28,12 @@
           {% for variant in variants %}
             <li>
               {{ variant.charact }}
-              <p>Stock: {{ variant.stock }}</p>
+              <p id="stock_{{ variant.id }}">Stock: {{ variant.stock }}</p>
             </li>
             {% if variant.stock > 0 %}
               <button data-variant_id="{{ variant.id }}" type="button" class="btnVariant btn btn-outline-primary">Add</button>
             {% else %}
-              <button type="button" class="btn btn-outline-danger" disabled>Primary button</button>
+              <button data-variant_id="{{ variant.id }}" type="button" class="btnVariant btn btn-outline-primary" disabled>There is no stock</button>
             {% endif %}
           {% endfor %}
         </ul>

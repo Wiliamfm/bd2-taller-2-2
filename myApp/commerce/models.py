@@ -182,4 +182,4 @@ class Variant(models.Model):
         return f"{self.id}"
     '''
     def as_dict(self):
-        return {'id': self.id, 'stock': self.stock, 'description': self.charact}
+        return {'id': self.id, 'stock': self.stock, 'description': self.description}
