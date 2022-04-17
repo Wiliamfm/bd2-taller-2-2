@@ -110,7 +110,8 @@ def bills(request):
 				'address': {
 					'longitude': data['longitude'],
 					'latitude': data['latitude']
-				}
+				},
+				'state': 'preparation'
 			}
 			total= 0
 			for product in products:
@@ -175,10 +176,12 @@ def login(request, home_url):
 
 def supplier(request):
 	if request.method == 'GET':
-		is_signed= request.COOKIES.get('custom_session_id')
-		if is_signed:
-
-			return render(request, 'commerce/supplier.html')
+		user_document= request.COOKIES.get('custom_session_id')
+		if user_document:
+			products= col.find({'items.product.supplier': user_document})
+			return render(request, 'commerce/supplier.html', context= {
+				'products': list(products)
+			})
 		else:
 			return redirect('login', home_url= 'supplier')
 	pass
