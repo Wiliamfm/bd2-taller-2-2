@@ -1,7 +1,11 @@
+from ast import Try
 import json
-from django.http import JsonResponse
+from multiprocessing import context
+from urllib import response
+from django.http import JsonResponse, HttpResponsePermanentRedirect
 from django.shortcuts import redirect, render
 from django.core.serializers import serialize
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.cache import caches
 
@@ -142,3 +146,39 @@ def pay_methods(request):
 		pms= PayMethod.objects.all()
 		pay_methods= as_dict(pms)
 		return JsonResponse(pay_methods, status= 200, safe= False)
+
+@csrf_exempt
+def login(request, home_url):
+	if request.method == 'GET':
+		return render(request, 'commerce/login.html', context= {
+			'home_url': home_url
+		})
+	elif request.method == 'POST':
+		#Authenticat user
+		try:
+			print(request.POST.get('username'))
+			user= AppUser.objects.get(document= request.POST.get('username'))
+			if user.password == request.POST.get('psw'):
+				response= HttpResponsePermanentRedirect(reverse('supplier'))
+				response.set_cookie('custom_session_id', value= user.document)
+				return response
+			else:
+				return render(request, 'commerce/login.html', context= {
+					'home_url': home_url,
+					'message': "The password ir incorrect!"
+				})
+		except AppUser.DoesNotExist:
+			return render(request, 'commerce/login.html', context= {
+				'home_url': home_url,
+				'message': "The supplier is not register"
+			})
+
+def supplier(request):
+	if request.method == 'GET':
+		is_signed= request.COOKIES.get('custom_session_id')
+		if is_signed:
+
+			return render(request, 'commerce/supplier.html')
+		else:
+			return redirect('login', home_url= 'supplier')
+	pass

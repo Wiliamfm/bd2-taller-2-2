@@ -11,15 +11,20 @@
     </div>
   {% endif %}
 
+  <div class="container text-center">
+    <h2>Login Form</h2>
+  </div>
+
   <div class="container" style="margin: 5%;">
-    <form action="action_page.php" method="post">
+    <form action="{% url 'login' home_url %}" method="post">
       <div class="mb-3">
-        <label class="form-label" for="username">Username</label>
-        <input class="form-control" type="text" placeholder="Enter Username" name="username" required>
+        <label class="form-label" for="username">Document</label>
+        <input class="form-control" type="number" placeholder="Enter your document" name="username" id="username" required>
+        {% csrf_token %}
       </div>
       <div class="mb-3">
         <label class="form-label" for="psw"><b>Password</b></label>
-        <input class="form-control" type="password" placeholder="Enter Password" name="psw" required>
+        <input class="form-control" type="password" placeholder="Enter Password" name="psw" id="password" required>
       </div>
         <button class="btn btn-primary" type="submit">Login</button>
     </form>
