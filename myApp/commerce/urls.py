@@ -11,5 +11,6 @@ urlpatterns = [
     path('buy/', views.bills, name='bills'),
     path('pay_methods/', views.pay_methods, name= 'pay_methods'),
     path('login/<str:home_url>', view= views.login, name= 'login'),
+    path('logout/', views.logout, name= 'logout'),
     path('suppliers', view= views.supplier, name= 'suppliers')
 ]

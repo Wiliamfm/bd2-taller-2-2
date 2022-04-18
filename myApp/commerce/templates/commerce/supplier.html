@@ -5,7 +5,27 @@
 {% endblock %}
 
 {% block body %}
-  {% for product in products %}
-    {{ products }}
+  {% for bill in bills %}
+    <div class="container">
+      <div class="card m-1 p-1">
+        <div class="card-title">
+          <h3>
+            Bill # {{ forloop.counter }}
+          </h3>
+        </div>
+        {% for item in bill.items %}
+          <div class="card-body">
+            <h4>
+              {{ item.product.title }}
+            </h4>
+            <div class= "container">
+              <p>PAY METHOD: {{ bill.pay_method }}</p>
+              <p>ADDRESS: {{ bill.address }}</p>
+              <p>CLIENT: {{ bill.client }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
   {% endfor %}
 {% endblock %}

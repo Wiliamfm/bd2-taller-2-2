@@ -2,10 +2,8 @@
 {% load static %}
 
 {% block script %}
-<script async
-    src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
-</script>
 <script src="{% static 'commerce/buy.js' %}"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAXaQtvIdVPCnKK4KjX_ogp0s2IdvCdQE&callback=myMap"></script>
 {% endblock %}
 
 {% block title %}
@@ -18,6 +16,8 @@
       <div class="mb-3">
         <br>
         <h6>Address:</h6>
+        <!--The div element for the map -->
+        <!--<div id="map" style="height: 400px; width: 100%;"></div> -->
         <label for="latitude" class="form-label">latitude</label>
         <input type="text" class="form-control" id="latitude" required>
         <label for="longitude" class="form-label">longitude</label>

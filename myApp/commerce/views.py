@@ -2,7 +2,7 @@ from ast import Try
 import json
 from multiprocessing import context
 from urllib import response
-from django.http import JsonResponse, HttpResponsePermanentRedirect
+from django.http import HttpResponse, JsonResponse, HttpResponsePermanentRedirect
 from django.shortcuts import redirect, render
 from django.core.serializers import serialize
 from django.urls import reverse
@@ -111,7 +111,8 @@ def bills(request):
 					'longitude': data['longitude'],
 					'latitude': data['latitude']
 				},
-				'state': 'preparation'
+				'state': 'preparation',
+				'client': 'No register'
 			}
 			total= 0
 			for product in products:
@@ -148,6 +149,12 @@ def pay_methods(request):
 		pay_methods= as_dict(pms)
 		return JsonResponse(pay_methods, status= 200, safe= False)
 
+def logout(request):
+	if request.method == 'GET':
+		response= HttpResponsePermanentRedirect(reverse('index'))
+		response.delete_cookie('custom_session_id')
+		return response
+
 @csrf_exempt
 def login(request, home_url):
 	if request.method == 'GET':
@@ -159,8 +166,8 @@ def login(request, home_url):
 		try:
 			print(request.POST.get('username'))
 			user= AppUser.objects.get(document= request.POST.get('username'))
-			if user.password == request.POST.get('psw'):
-				response= HttpResponsePermanentRedirect(reverse('supplier'))
+			if user.password == request.POST.get('psw') and user.user_type.type == 'vendor':
+				response= HttpResponsePermanentRedirect('suppliers/')
 				response.set_cookie('custom_session_id', value= user.document)
 				return response
 			else:
@@ -178,9 +185,10 @@ def supplier(request):
 	if request.method == 'GET':
 		user_document= request.COOKIES.get('custom_session_id')
 		if user_document:
-			products= col.find({'items.product.supplier': user_document})
+			bills= col.find({"items.product.supplier": user_document})
 			return render(request, 'commerce/supplier.html', context= {
-				'products': list(products)
+				'is_signed': True,
+				'bills': bills
 			})
 		else:
 			return redirect('login', home_url= 'supplier')

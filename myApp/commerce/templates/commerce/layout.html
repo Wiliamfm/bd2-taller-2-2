@@ -22,9 +22,9 @@
     	<li class="nav-item">
       	<a class="nav-link active" aria-current="page" href="{% url 'index' %}">Home</a>
     	</li>
-			{% if user.is_authenticated %}
+			{% if is_signed %}
     		<li class="nav-item">
-      		<a class="nav-link" href="#">logout</a>
+      		<a class="nav-link" href="{% url 'logout' %}">logout</a>
     		</li>
 			{% else %}
     		<li class="nav-item">
